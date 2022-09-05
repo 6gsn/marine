@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: marine
+Version: 0.0.1
+Summary: A unified accent estimation method based on multi-task learning for Japanese text-to-speech
+Home-page: https://github.com/6gsn/marine
+Author: Byeongseon Park
+Author-email: 6gsn.park@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.7
+Classifier: License :: OSI Approved :: Apache Software License
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# marine
+
