@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-marine/__init__.py
-marine.egg-info/PKG-INFO
-marine.egg-info/SOURCES.txt
-marine.egg-info/dependency_links.txt
-marine.egg-info/top_level.txt
