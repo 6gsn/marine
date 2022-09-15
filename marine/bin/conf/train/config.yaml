@@ -1,0 +1,8 @@
+defaults:
+  - criterions: att-mtl
+  - optim: adam_plate
+  - model: att-mtl
+  - train: local
+  - data: ap
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["wheel", "setuptools"]
+
+[tool.pysen]
+version = "0.10"
+
+[tool.pysen.lint]
+enable_black = true
+enable_flake8 = true
+enable_isort = true
+enable_mypy = false
+mypy_preset = "entry"
+line_length = 88
+py_version = "py37"
+
+[[tool.pysen.lint.mypy_targets]]
+paths = [".", "tests/"]
+
+[tool.pytest.ini.options]
+minversion="6.0"
+addopts = "-ra -q"
+testpaths = ["tests"]

@@ -1,0 +1,8 @@
+defaults:
+  - train: basic
+  - data: mora_based_seq
+  - model: mtl_lstm_encoder_crf_decoder
+  - criterions: loglikehood
+  - optim: adam
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog

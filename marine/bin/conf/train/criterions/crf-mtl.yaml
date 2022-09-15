@@ -1,0 +1,6 @@
+break:
+    _target_: marine.criterions.LogLikelhood
+boundary:
+    _target_: marine.criterions.LogLikelhood
+accent:
+    _target_: marine.criterions.LogLikelhood
