@@ -1,0 +1,18 @@
+seed: 12345
+verbose: 100
+
+num_epochs: 20
+checkpoint_interval: 5
+save_optimizer_state: true
+save_test_log: true
+save_vocab_path: true
+upload_tensorborad_event: true
+
+gpus: 1
+
+out_dir: checkpoint
+model_name: test
+test_checkpoint_filename: latest.pth
+
+tensorboard_event_path: null
+test_log_dir: null

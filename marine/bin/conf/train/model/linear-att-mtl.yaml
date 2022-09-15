@@ -1,0 +1,63 @@
+vocab_path: null
+
+# general setting for each module
+embedding:
+  _target_: marine.models.SimpleEmbedding
+  embeding_sizes:
+    surface: 512
+    mora: 256
+    pos: 128
+    word_type: 64
+    c_type: 256
+    c_form: 128
+    accent_type: 64
+    accent_con_type: 64
+    accent_mod_type: 64
+  dropout: 0.5
+
+encoder:
+  param:
+    _target_: marine.models.BiLSTMEncoder
+    num_layers: 3
+    hidden_size: 512
+    # input_size: depend on setting for embedding output size
+  shared_with:
+    intonation_phrase_boundary: null
+    accent_phrase_boundary: intonation_phrase_boundary
+    accent_status: accent_phrase_boundary
+
+decoder:
+  intonation_phrase_boundary:
+    _target_: marine.models.LinearDecoder
+    prev_task_embedding_label_list: null
+    prev_task_embedding_size: null
+    prev_task_dropout: 0.5
+    # input_size: depend on setting for encoder output size / is hierarchical decoder
+    # output_size: depend on setting for each label
+  accent_phrase_boundary:
+    _target_: marine.models.LinearDecoder
+    prev_task_embedding_label_list:
+      - intonation_phrase_boundary
+    prev_task_embedding_size:
+      intonation_phrase_boundary: 64
+    prev_task_dropout: 0.5
+    # input_size: depend on setting for encoder output size / is hierarchical decoder
+    # output_size: depend on setting for each label
+  accent_status:
+    _target_: marine.models.AttentionBasedLSTMDecoder
+    prev_task_embedding_label_list:
+      - accent_phrase_boundary
+    prev_task_embedding_size:
+      accent_phrase_boundary: 64
+    decoder_embedding_size: 128
+    hidden_size: 512
+    num_layers: 2
+    attention_hidden_size: 256
+    zoneout: 0.1
+    prev_task_dropout: 0.5
+    decoder_prev_out_dropout: 0.5
+    # input_size: depend on setting for encoder output size / is hierarchical decoder
+    # output_size: depend on setting for each label
+
+base:
+  _target_: marine.models.BaseModel

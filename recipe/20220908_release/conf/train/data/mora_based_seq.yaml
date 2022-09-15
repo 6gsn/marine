@@ -1,0 +1,29 @@
+batch_size: 256
+num_workers: 8
+
+data_dir: dir/to/data
+
+feature_table_key: open-jtalk
+
+input_keys:
+  - mora
+  - surface
+  - pos
+  - c_type
+  - c_form
+  - accent_type
+  - accent_con_type
+
+input_length_key: mora
+
+output_keys: # = tasks
+  - intonation_phrase_boundary
+  - accent_phrase_boundary
+  - accent_status
+
+output_sizes:
+  intonation_phrase_boundary: 3
+  accent_phrase_boundary: 3
+  accent_status: 3
+
+represent_mode: binary
