@@ -2,6 +2,7 @@ import re
 import warnings
 from pathlib import Path
 
+import marine
 import torch
 from marine.data.feature.feature_set import FeatureSet
 from marine.data.pad import Padsequence
@@ -12,6 +13,7 @@ from marine.models import (
     init_model,
 )
 from marine.utils.post_process import apply_postprocess_dict, load_postprocess_vocab
+from marine.utils.pretrained import retrieve_pretrained_model
 from marine.utils.util import (
     _convert_ap_based_accent_to_mora_based_accent,
     convert_open_jtalk_format_label,
@@ -31,7 +33,7 @@ class Predictor:
 
     def __init__(
         self,
-        model_dir,
+        model_dir=None,
         postprocess_vocab_dir=None,
         device="cpu",
         skip_post_process=False,
@@ -40,10 +42,10 @@ class Predictor:
         self.setup_postprocess_vocab(postprocess_vocab_dir, skip_post_process)
 
     def setup_model(self, model_dir, device):
-        if isinstance(model_dir, str):
+        if model_dir is None:
+            self.model_dir = Path(retrieve_pretrained_model(marine.__version__))
+        elif isinstance(model_dir, str):
             self.model_dir = Path(model_dir)
-        elif isinstance(model_dir, Path):
-            raise TypeError("model_dir must be Path or str")
 
         assert (
             isinstance(self.model_dir, Path) and self.model_dir.exists()
