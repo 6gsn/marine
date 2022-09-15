@@ -1,0 +1,6 @@
+intonation_phrase_boundary:
+    _target_: marine.criterions.LogLikelhood
+accent_phrase_boundary:
+    _target_: marine.criterions.LogLikelhood
+accent_status:
+    _target_: marine.criterions.CrossEntropyLoss

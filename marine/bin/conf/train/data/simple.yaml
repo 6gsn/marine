@@ -1,0 +1,31 @@
+batch_size: 512
+num_workers: 4
+
+data_dir: dir/to/data
+
+feature_table_key: unidic-csj
+
+input_keys:
+  - mora
+  - surface
+  - pos
+  - word_type
+  - c_type
+  - c_form
+  - accent_type
+  - accent_con_type
+  - accent_mod_type
+
+input_length_key: mora
+
+output_keys: # = tasks
+  - intonation_phrase_boundary
+  - accent_phrase_boundary
+  - accent_status
+
+output_sizes:
+  intonation_phrase_boundary: 3
+  accent_phrase_boundary: 3
+  accent_status: 3
+
+represent_mode: high_low

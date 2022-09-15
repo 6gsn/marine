@@ -1,0 +1,11 @@
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 1e-3
+  eps: 1e-7
+  betas: [0.9, 0.999]
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  mode: min
+  threshold: 1e-3
+  factor: 0.7
