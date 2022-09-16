@@ -2,7 +2,6 @@ import re
 import warnings
 from pathlib import Path
 
-import marine
 import torch
 from marine.data.feature.feature_set import FeatureSet
 from marine.data.pad import Padsequence
@@ -34,16 +33,20 @@ class Predictor:
     def __init__(
         self,
         model_dir=None,
+        version=None,
         postprocess_vocab_dir=None,
         device="cpu",
         skip_post_process=False,
     ):
-        self.setup_model(model_dir, device)
+        self.setup_model(model_dir, version, device)
         self.setup_postprocess_vocab(postprocess_vocab_dir, skip_post_process)
 
-    def setup_model(self, model_dir, device):
+    def setup_model(self, model_dir, version, device):
         if model_dir is None:
-            self.model_dir = Path(retrieve_pretrained_model(marine.__version__))
+            if version is None:
+                self.model_dir = Path(retrieve_pretrained_model())
+            else:
+                self.model_dir = Path(retrieve_pretrained_model(version))
         elif isinstance(model_dir, str):
             self.model_dir = Path(model_dir)
 
