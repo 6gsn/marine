@@ -22,7 +22,7 @@ val_test_size=100
 
 jsut_script_path=$HOME/data
 output_dir=$script_dir/outputs
-tag=20220910_jsut_pyopenjtalk_update_feature
+tag=20220912_release
 
 exist_vocab_dir=$COMMON_ROOT/database/20220912_jsut_vocab_min_2
 exist_feature_dir=$COMMON_ROOT/database/20220912_auto_annotated_feature
