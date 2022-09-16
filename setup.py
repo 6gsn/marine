@@ -37,12 +37,12 @@ setup(
         "hydra-core >= 1.1.0",
         "hydra_colorlog >= 1.1.0",
         "tqdm",
+        "joblib",
     ],
     extras_require={
         "dev": [
             "torchmetrics",
             "scikit-learn",
-            "joblib",
             "docstr-coverage",
             "tensorboard",
             "matplotlib",
