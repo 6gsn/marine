@@ -140,7 +140,7 @@ def test_predict(predictor):
             "accent_type": 0,
             "accent_con_type": "*",
             "chain_flag": 0,
-        }
+        },
     ]
     feature = predictor.predict([nodes])
 
