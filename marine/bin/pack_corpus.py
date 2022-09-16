@@ -311,7 +311,7 @@ def entry(argv=sys.argv):
     n_jobs = min(cpu_count(), args.n_jobs)
 
     if n_jobs > 1:
-        logger.info(f"Procesing {len(corpus):,} scripts with {n_jobs} jobs")
+        logger.info(f"Processing {len(corpus):,} scripts with {n_jobs} jobs")
         with ProcessPoolExecutor(n_jobs) as executor:
             futures = [
                 executor.submit(
@@ -330,7 +330,7 @@ def entry(argv=sys.argv):
                 )
             ]
     else:
-        logger.info(f"Procesing {len(corpus):,} scripts in a single thread")
+        logger.info(f"Processing {len(corpus):,} scripts in a single thread")
         corpus = [
             _process(
                 feature["nodes"], feature_set, args.accent_status_seq_level, **script
