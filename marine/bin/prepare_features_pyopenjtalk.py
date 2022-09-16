@@ -37,7 +37,7 @@ def extract_feature(script_id, text):
         from pyopenjtalk import run_frontend
     except BaseException:
         raise ImportError(
-            'Please install pyopenjtalk by `pip install  ".[dev,pyopenjtalk]"`'
+            'Please install pyopenjtalk by `pip install -e ".[dev,pyopenjtalk]"`'
         )
 
     # drop full-context label
@@ -68,7 +68,7 @@ def entry(argv=sys.argv):
     corpus = load_json_corpus(args.in_path)
 
     if n_jobs > 1:
-        logger.info(f"Procesing {len(corpus):,} scripts with {n_jobs} jobs")
+        logger.info(f"Processing {len(corpus):,} scripts with {n_jobs} jobs")
         with ProcessPoolExecutor(n_jobs) as executor:
             futures = [
                 executor.submit(
@@ -85,7 +85,7 @@ def entry(argv=sys.argv):
                 )
             ]
     else:
-        logger.info(f"Procesing {len(corpus):,} scripts in a single thread")
+        logger.info(f"Processing {len(corpus):,} scripts in a single thread")
         corpus = [
             extract_feature(script["script_id"], script["surface"]) for script in corpus
         ]
