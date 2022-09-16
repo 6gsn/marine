@@ -3,14 +3,12 @@ import random
 import warnings
 from logging import getLogger
 
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import numpy as np
 import torch
 from marine.data.feature.feature_table import RAW_FEATURE_KEYS
 from marine.utils.g2p_util import mora2phon, pron2mora
 from marine.utils.regex import has_longvowel
-from sklearn.model_selection import train_test_split
+
 
 logger = getLogger(__name__)
 
@@ -75,6 +73,13 @@ def split_corpus(
     random_state=1,
     absolute_test_size=-1,
 ):
+    try:
+        from sklearn.model_selection import train_test_split
+    except BaseException:
+        raise ImportError(
+            'Please install sklearn by `pip install -e ".[dev]"`'
+        )
+
     """Split corpus into train, valid, test."""
     if absolute_test_size > 0:
         assert absolute_test_size < len(corpus)
@@ -360,6 +365,14 @@ def convert_mora_jp_to_en(mora):
 
 
 def plot_attention(attention, xs=None, ys=None):
+    try:
+        import matplotlib.pyplot as plt
+        import matplotlib.ticker as ticker
+    except BaseException:
+        raise ImportError(
+            'Please install matplotlib by `pip install -e ".[dev]"`'
+        )
+
     fig, ax = plt.subplots()
     attention = attention.cpu().data.numpy().T
 
