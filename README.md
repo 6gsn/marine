@@ -5,5 +5,11 @@
 ### Install
 
 ```shell
+$ pip install marine
+```
+
+### For develop
+
+```shell
 $ pip install -e ".[dev]"
 ```
