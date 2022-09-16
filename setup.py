@@ -77,4 +77,18 @@ setup(
             "marine-test = marine.bin.test:entry",
         ],
     },
+    classifiers=[
+        "Operating System :: Unix",
+        "Operating System :: MacOS",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "License :: OSI Approved :: Apache Software License",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Software Development",
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Developers",
+    ],
 )
