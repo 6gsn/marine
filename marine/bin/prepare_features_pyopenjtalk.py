@@ -6,7 +6,10 @@ from multiprocessing import cpu_count
 from pathlib import Path
 
 from marine.logger import getLogger
-from marine.utils.util import convert_open_jtalk_node_to_feature, load_json_corpus
+from marine.utils.openjtalk_util import (
+    convert_open_jtalk_node_to_feature,
+    load_json_corpus,
+)
 from tqdm import tqdm
 
 logger = None

@@ -15,10 +15,13 @@ from marine.data.feature.feature_table import (
     parse_accent_con_type,
 )
 from marine.models.util import init_model
+from marine.utils.openjtalk_util import (
+    convert_njd_feature_to_marine_feature,
+    convert_open_jtalk_format_label,
+)
 from marine.utils.util import (
     _calculate_multiple_task_scores,
     _convert_ap_based_accent_to_mora_based_accent,
-    convert_open_jtalk_format_label,
     expand_word_label_to_mora,
 )
 from numpy.testing import assert_almost_equal
@@ -349,6 +352,97 @@ def test_parse_accent_con_type():
         ("動詞%F2@0,形容詞%F2@-1,名詞%F1", "形状詞:タリ:*:*", "[UNK]"),
     ]:
         assert parse_accent_con_type(a_con_type, pos_tag) == expect
+
+
+def test_convert_njd_feature_to_marine_feature():
+    for features, expect in [
+        (
+            [
+                {
+                    "string": "これ",
+                    "pos": "名詞",
+                    "pos_group1": "代名詞",
+                    "pos_group2": "一般",
+                    "pos_group3": "*",
+                    "ctype": "*",
+                    "cform": "*",
+                    "orig": "これ",
+                    "read": "コレ",
+                    "pron": "コレ",
+                    "acc": 0,
+                    "mora_size": 2,
+                    "chain_rule": "C3",
+                    "chain_flag": -1,
+                },
+                {
+                    "string": "は",
+                    "pos": "助詞",
+                    "pos_group1": "係助詞",
+                    "pos_group2": "*",
+                    "pos_group3": "*",
+                    "ctype": "*",
+                    "cform": "*",
+                    "orig": "は",
+                    "read": "ハ",
+                    "pron": "ワ",
+                    "acc": 0,
+                    "mora_size": 1,
+                    "chain_rule": "名詞%F1/動詞%F2@0/形容詞%F2@0",
+                    "chain_flag": 1,
+                },
+                {
+                    "string": "テスト",
+                    "pos": "名詞",
+                    "pos_group1": "サ変接続",
+                    "pos_group2": "*",
+                    "pos_group3": "*",
+                    "ctype": "*",
+                    "cform": "*",
+                    "orig": "テスト",
+                    "read": "テスト",
+                    "pron": "テス’ト",
+                    "acc": 1,
+                    "mora_size": 3,
+                    "chain_rule": "C1",
+                    "chain_flag": 0,
+                },
+            ],
+            [
+                {
+                    "surface": "これ",
+                    "pos": "名詞:代名詞:一般:*",
+                    "c_type": "*",
+                    "c_form": "*",
+                    "pron": "コレ",
+                    "accent_type": 0,
+                    "accent_con_type": "C3",
+                    "chain_flag": -1,
+                },
+                {
+                    "surface": "は",
+                    "pos": "助詞:係助詞:*:*",
+                    "c_type": "*",
+                    "c_form": "*",
+                    "pron": "ワ",
+                    "accent_type": 0,
+                    "accent_con_type": "名詞%F1,動詞%F2@0,形容詞%F2@0",
+                    "chain_flag": 1,
+                },
+                {
+                    "surface": "テスト",
+                    "pos": "名詞:サ変接続:*:*",
+                    "c_type": "*",
+                    "c_form": "*",
+                    "pron": "テスト",
+                    "accent_type": 1,
+                    "accent_con_type": "C1",
+                    "chain_flag": 0,
+                },
+            ],
+        ),
+    ]:
+        results = convert_njd_feature_to_marine_feature(features)
+        assert results == expect
 
 
 def test_convert_open_jtalk_format_label():

@@ -11,11 +11,11 @@ from marine.models import (
     LinearDecoder,
     init_model,
 )
+from marine.utils.openjtalk_util import convert_open_jtalk_format_label
 from marine.utils.post_process import apply_postprocess_dict, load_postprocess_vocab
 from marine.utils.pretrained import retrieve_pretrained_model
 from marine.utils.util import (
     _convert_ap_based_accent_to_mora_based_accent,
-    convert_open_jtalk_format_label,
     expand_word_label_to_mora,
     sequence_mask,
 )
