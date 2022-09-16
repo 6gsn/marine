@@ -24,7 +24,6 @@ IGNORE_TARGET_MORA_FOR_ACCENT = ["ー", "ッ"]
 JSON_LOG_STATUS_TO_TAG = {True: "success", False: "fail"}
 JSON_LOG_TAG_TO_STATUS = {tag: status for status, tag in JSON_LOG_STATUS_TO_TAG.items()}
 
-
 OPEN_JTALK_FEATURE_INDEX_TABLE = {
     "surface": 0,
     "pos": [1, 2, 3, 4],

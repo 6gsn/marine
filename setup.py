@@ -24,7 +24,7 @@ else:
 setup(
     name="marine",
     version=find_version("marine", "__init__.py"),
-    description="Marine: Multi-task learning-based japanese accent estimation",
+    description="Marine: Multi-task learning based on Japanese accent estimation",
     packages=find_packages(),
     author="Byeongseon Park",
     author_email="6gsn.park@gmail.com",
@@ -46,7 +46,6 @@ setup(
             "docstr-coverage",
             "tensorboard",
             "matplotlib",
-            "pysen",
             "pytest",
             "pytest-cov",
             "docstr-coverage",

@@ -1,4 +1,4 @@
-## **MARINE** : **M**ulti-task lea**R**n**I**ng-based japa**N**ese accent **E**stimation
+## **MARINE** : **M**ulti-task lea**R**n**I**ng-based Japa**N**ese accent **E**stimation
 
 ## Get started
 
