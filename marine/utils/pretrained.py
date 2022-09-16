@@ -12,6 +12,8 @@ from tqdm.auto import tqdm
 
 DEFAULT_CACHE_DIR = join(os.path.expanduser("~"), ".cache", "marine")
 CACHE_DIR = os.environ.get("MARINE_CACHE_DIR", DEFAULT_CACHE_DIR)
+
+DEFAULT_VERSION = "v0.0.2"
 MODEL_BASE_URL = "https://github.com/6gsn/marine/releases/download/"
 
 
@@ -23,10 +25,10 @@ class _TqdmUpTo(tqdm):  # type: ignore
         return self.update(b * bsize - self.n)
 
 
-def retrieve_pretrained_model(version="v0.0.1"):
+def retrieve_pretrained_model(version=None):
     """Retrieve pretrained model from local cache or download from GitHub.
     Args:
-        name (str): Name of pretrained model.
+        version (str): Version of pretrained model.
     Returns:
         str: Path to the pretrained model.
     Raises:
@@ -34,14 +36,19 @@ def retrieve_pretrained_model(version="v0.0.1"):
     Examples:
         >>> from marine.utils.pretrained import retrieve_pretrained_model
         >>> from marine.predict import Predictor
-        >>> model_dir = retrieve_pretrained_model("v0.0.1")
+        >>> model_dir = retrieve_pretrained_model("v0.0.2")
         >>> predictor = Tacotron2PWGTTS(model_dir=model_dir, device="cpu")
     """
+
+    if version is None:
+        version = DEFAULT_VERSION
+    elif not isinstance(version, str):
+        raise TypeError(f"version must be str not {type(version)}")
+
     url = MODEL_BASE_URL + f"{version}/model.tar.gz"
 
     # NOTE: assuming that filename and extracted is the same
     out_dir = Path(CACHE_DIR) / version
-    out_dir.mkdir(parents=True, exist_ok=True)
     filename = Path(CACHE_DIR) / f"{version}/model.tar.gz"
 
     # re-download models
@@ -54,6 +61,9 @@ def retrieve_pretrained_model(version="v0.0.1"):
             "Please visit https://github.com/6gsn/marine to confirm the license."
         )
         print('Downloading: "{}"'.format(url))
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+
         with _TqdmUpTo(
             unit="B",
             unit_scale=True,
@@ -64,7 +74,7 @@ def retrieve_pretrained_model(version="v0.0.1"):
             urlretrieve(url, filename, reporthook=t.update_to)
             t.total = t.n
         with tarfile.open(filename, mode="r|gz") as f:
-            f.extractall(path=CACHE_DIR)
+            f.extractall(path=out_dir)
         os.remove(filename)
 
     return out_dir
