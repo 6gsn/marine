@@ -26,13 +26,13 @@ The model included in this package is trained using [JSUT corpus](https://sites.
 
 ## Get started
 
-### Install
+### Installation
 
 ```shell
 $ pip install marine
 ```
 
-### For develop
+### For development
 
 ```shell
 $ pip install -e ".[dev]"
@@ -43,18 +43,7 @@ $ pip install -e ".[dev]"
 ```python
 In [1]: from marine.predict import Predictor
 
-In [2]: nodes = [
-   ...:     {
-   ...:         "surface": "こんにちは",
-   ...:         "pos": "感動詞:*:*:*",
-   ...:         "pron": "コンニチワ",
-   ...:         "c_type": "*",
-   ...:         "c_form": "*",
-   ...:         "accent_type": 0,
-   ...:         "accent_con_type": "-1",
-   ...:         "chain_flag": -1
-   ...:     }
-   ...: ]
+In [2]: nodes = [{"surface": "こんにちは", "pos": "感動詞:*:*:*", "pron": "コンニチワ", "c_type": "*", "c_form": "*", "accent_type": 0, "accent_con_type": "-1", "chain_flag": -1}]
 
 In [3]: predictor = Predictor()
 
@@ -80,4 +69,4 @@ Coming soon...
 ## LICENSE
 
 - marine: Apache 2.0 license ([LICENSE](LICENSE))
-- JSUT: CC-BY-SA 4.0 license (Please check [jsut-label/LICENCE.txt](https://github.com/sarulab-speech/jsut-label/blob/master/LICENCE.txt))
+- JSUT: CC-BY-SA 4.0 license, etc. (Please check [jsut-label/LICENCE.txt](https://github.com/sarulab-speech/jsut-label/blob/master/LICENCE.txt))
