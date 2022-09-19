@@ -79,5 +79,5 @@ Coming soon
 
 ## LICENSE
 
-- marine: Apache_2.0 license ([LICENSE.md](LICENSE.md))
+- marine: Apache_2.0 license ([LICENSE](LICENSE))
 - JSUT: CC-BY-SA 4.0 license (Please check [jsut-label/LICENCE.txt](https://github.com/sarulab-speech/jsut-label/blob/master/LICENCE.txt))
