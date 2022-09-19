@@ -9,6 +9,13 @@ from marine.utils.regex import has_longvowel
 
 logger = getLogger(__name__)
 
+BINARY_ACCENT_REPRESENT_MODE = "binary"
+HIGH_LOW_ACCENT_REPRESENT_MODE = "high_low"
+AVAILABLE_ACCENT_REPRESENT_MODES = (
+    BINARY_ACCENT_REPRESENT_MODE,
+    HIGH_LOW_ACCENT_REPRESENT_MODE,
+)
+
 LABEL_TABLE = {
     "intonation_phrase_boundary": {
         "O": 1,
@@ -226,10 +233,14 @@ def expand_word_label_to_mora(labels, moras, boundaries, target):
 
 
 def _convert_ap_based_accent_to_mora_based_accent(
-    ap_accents, phrases, mode="high_low", mora=None, accent_phrase_boundary_label=2
+    ap_accents,
+    phrases,
+    mode=HIGH_LOW_ACCENT_REPRESENT_MODE,
+    mora=None,
+    accent_phrase_boundary_label=2,
 ):
     """Convert accent phrase-based accent status sequence to mora-based."""
-    assert mode in ["binary", "high_low"], (
+    assert mode in AVAILABLE_ACCENT_REPRESENT_MODES, (
         f"Not supported representation mode {mode}:",
         "Representation mode must be selected in binary and high_low",
     )
@@ -256,7 +267,7 @@ def _convert_ap_based_accent_to_mora_based_accent(
     mora_accents = []
 
     for index, (accent, phrase) in enumerate(zip(ap_accents, phrases)):
-        if mode == "binary":
+        if mode == BINARY_ACCENT_REPRESENT_MODE:
             if mora is not None:
                 moras = ap_moras[index]
             else:
@@ -271,7 +282,7 @@ def _convert_ap_based_accent_to_mora_based_accent(
                 and moras[accent_label] not in IGNORE_TARGET_MORA_FOR_ACCENT
             ):
                 mora_accent[accent_label] = 1
-        elif mode == "high_low":
+        elif mode == HIGH_LOW_ACCENT_REPRESENT_MODE:
             if mora is not None:
                 moras = ap_moras[index]
             else:
@@ -309,7 +320,7 @@ def convert_ap_based_accent_to_mora_based_accent(
     accent_phrase_boundaries,
     ap_seq_masks,
     mora_seq_masks,
-    accent_represent_mode="binary",
+    accent_represent_mode=BINARY_ACCENT_REPRESENT_MODE,
 ):
     """Convert accent phrase-based accent status sequence to mora-based."""
     mora_accent_statuses = np.array([], dtype=np.int64)
@@ -338,6 +349,100 @@ def convert_ap_based_accent_to_mora_based_accent(
         )
 
     return mora_accent_statuses
+
+
+def get_accent_nucleus_in_binary_accent_stauts_seq(
+    ap_based_clipped_accents, binary_accent_nucleus_label=2
+):
+    accent_nucleus_index = np.where(
+        ap_based_clipped_accents == binary_accent_nucleus_label
+    )[0]
+    if len(accent_nucleus_index) >= 1:  # Type: 1 ~ N
+        # an accent phrase has at most one accent nucleus
+        # and the `accent_nucleus_index` must be represented as 1-based label
+        # (for 0 = no accent nucleus)
+        accent_nucleus_index = int(accent_nucleus_index[0]) + 1
+    else:
+        accent_nucleus_index = 0  # Type: 0 (No accent)
+    return accent_nucleus_index
+
+
+def get_accent_nucleus_in_high_low_accent_stauts_seq(
+    ap_based_clipped_accents, high_low_accent_nucleus_label=1
+):
+    low_pitch_locations = list(
+        np.where(ap_based_clipped_accents == high_low_accent_nucleus_label)[0]
+    )
+    if len(low_pitch_locations) > 1:  # Type: 1 ~ N
+        low_pitch_pointer = 0 if low_pitch_locations[0] != 0 else 1
+        accent_nucleus_index = int(low_pitch_locations[low_pitch_pointer])
+    else:
+        accent_nucleus_index = 0  # Type: 0 (No accent)
+    return accent_nucleus_index
+
+
+def convert_label_by_accent_representation_model(
+    mora_based_accents,
+    accent_phrase_boundary,
+    moras,
+    current_accent_represent_mode,
+    target_accent_represent_mode,
+    binary_accent_nucleus_label=2,
+    high_low_accent_nucleus_label=1,
+    accent_phrase_boundary_label=2,
+):
+    """Convert accent label for following with target accent representation mode"""
+    assert current_accent_represent_mode != target_accent_represent_mode
+    assert current_accent_represent_mode in AVAILABLE_ACCENT_REPRESENT_MODES
+    assert target_accent_represent_mode in AVAILABLE_ACCENT_REPRESENT_MODES
+
+    if isinstance(mora_based_accents, torch.Tensor):
+        mora_based_accents = mora_based_accents.cpu()
+    elif not isinstance(mora_based_accents, np.ndarray):
+        raise TypeError("mora_based_accents must be tensor or numpy.array")
+
+    if isinstance(accent_phrase_boundary, torch.Tensor):
+        accent_phrase_boundary = accent_phrase_boundary.cpu()
+    elif not isinstance(accent_phrase_boundary, np.ndarray):
+        raise TypeError("accent_phrase_boundary must be tensor or numpy.array")
+
+    assert len(mora_based_accents) == len(accent_phrase_boundary) == len(moras)
+
+    converted_accents = []
+    accent_phrse_boundary_indexs = np.where(
+        accent_phrase_boundary == accent_phrase_boundary_label
+    )[0]
+
+    ap_based_clipped_moras = np.split(moras, accent_phrse_boundary_indexs)
+    ap_based_clipped_accents = np.split(
+        mora_based_accents, accent_phrse_boundary_indexs
+    )
+
+    for ap_based_clipped_mora, ap_based_clipped_accent in zip(
+        ap_based_clipped_moras, ap_based_clipped_accents
+    ):
+        if current_accent_represent_mode == HIGH_LOW_ACCENT_REPRESENT_MODE:
+            accent_nucleus_index = get_accent_nucleus_in_high_low_accent_stauts_seq(
+                ap_based_clipped_accent, high_low_accent_nucleus_label
+            )
+        elif current_accent_represent_mode == BINARY_ACCENT_REPRESENT_MODE:
+            accent_nucleus_index = get_accent_nucleus_in_binary_accent_stauts_seq(
+                ap_based_clipped_accent, binary_accent_nucleus_label
+            )
+        else:
+            raise ValueError(
+                f"Not supported accent mode: {current_accent_represent_mode}"
+            )
+
+        _, converted_accent = pron2mora(
+            ap_based_clipped_mora,
+            accent=accent_nucleus_index,
+            represent_mode=target_accent_represent_mode,
+        )
+
+        converted_accents += converted_accent
+
+    return np.array(converted_accents)
 
 
 def convert_mora_jp_to_en(mora):
