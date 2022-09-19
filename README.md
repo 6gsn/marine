@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/marine.svg)](https://pypi.python.org/pypi/marine)
 [![Python package](https://github.com/6gsn/marine/actions/workflows/ci.yml/badge.svg)](https://github.com/6gsn/marine/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-<!-- [![DOI](https://zenodo.org/badge/#)](https://zenodo.org/badge/latestdoi/#) -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7092054.svg)](https://doi.org/10.5281/zenodo.7092054)
 
 `marine` is a tool kit for building the Japanese accent estimation model proposed in [our paper](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html).
 
