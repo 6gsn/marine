@@ -16,6 +16,7 @@ from marine.utils.post_process import apply_postprocess_dict, load_postprocess_v
 from marine.utils.pretrained import retrieve_pretrained_model
 from marine.utils.util import (
     _convert_ap_based_accent_to_mora_based_accent,
+    convert_label_by_accent_representation_model,
     expand_word_label_to_mora,
     sequence_mask,
 )
@@ -147,6 +148,7 @@ class Predictor:
                     task,
                     annotates[task],
                     inputs["mask"],
+                    prev_task_outputs=inputs["prev_decoder_outputs"],
                     accent_represent_mode=accent_represent_mode,
                 )
                 prev_output = annotates[task]
@@ -175,6 +177,7 @@ class Predictor:
                     moras=result["mora"],
                     ap_lengths=ap_lengths,
                     ap_outputs=ap_outputs,
+                    prev_task_outputs=inputs["prev_decoder_outputs"],
                     accent_represent_mode=accent_represent_mode,
                 )
 
@@ -246,26 +249,51 @@ class Predictor:
         moras=None,
         ap_lengths=None,
         ap_outputs=None,
+        prev_task_outputs=None,
         accent_represent_mode="binary",
     ):
         predicts = []
 
         for index, (mora_mask, padded_predict) in enumerate(zip(mora_masks, outputs)):
-            # for annoted label
+            # for annotated label
             if len(padded_predict.shape) != 2:
                 predict = padded_predict[mora_mask]
             else:
-                if task == "accent_status" and ap_lengths is not None:
-                    predict = padded_predict[: ap_lengths[index]]
-                    ap_output = ap_outputs[index][mora_mask]
-
-                    predict = torch.argmax(predict, dim=1)
-                    predict = _convert_ap_based_accent_to_mora_based_accent(
-                        predict,
-                        ap_output,
-                        mode=accent_represent_mode,
-                        mora=moras[index],
-                    )
+                if task == "accent_status":
+                    # when the decoder for AN estimates AP-based label,
+                    # convert AP-based label to mora-mased label
+                    if ap_lengths is not None:
+                        predict = padded_predict[: ap_lengths[index]]
+                        ap_output = ap_outputs[index][mora_mask]
+                        predict = torch.argmax(predict, dim=1)
+                        predict = _convert_ap_based_accent_to_mora_based_accent(
+                            predict,
+                            ap_output,
+                            mode=accent_represent_mode,
+                            mora=moras[index],
+                        )
+                    # when the decoder for AN estimates mora-based label
+                    # and `accent_represent_mode` is different
+                    # between configuration for inference and model,
+                    # convert the label to follow the inference setting
+                    elif self.config.data.represent_mode != accent_represent_mode:
+                        predict = padded_predict[mora_mask]
+                        accent_phrase_boundary = prev_task_outputs[
+                            "accent_phrase_boundary"
+                        ][index][mora_mask]
+                        predict = torch.argmax(predict, dim=1)
+                        predict = convert_label_by_accent_representation_model(
+                            predict,
+                            accent_phrase_boundary,
+                            moras[index],
+                            current_accent_represent_mode=self.config.data.represent_mode,
+                            target_accent_represent_mode=accent_represent_mode,
+                        )
+                    else:
+                        predict = padded_predict[mora_mask]
+                        predict = torch.argmax(predict, dim=1)
+                        # convert 0-based label
+                        predict = predict - 1
                 else:
                     predict = padded_predict[mora_mask]
                     predict = torch.argmax(predict, dim=1)

@@ -22,7 +22,10 @@ from marine.utils.openjtalk_util import (
 from marine.utils.util import (
     _calculate_multiple_task_scores,
     _convert_ap_based_accent_to_mora_based_accent,
+    convert_label_by_accent_representation_model,
     expand_word_label_to_mora,
+    get_accent_nucleus_in_binary_accent_stauts_seq,
+    get_accent_nucleus_in_high_low_accent_stauts_seq,
 )
 from numpy.testing import assert_almost_equal
 from omegaconf import DictConfig
@@ -516,3 +519,93 @@ def test_convert_open_jtalk_format_label():
     ]:
         result = convert_open_jtalk_format_label(labels, morph_boundary)
         assert result == expect
+
+
+def test_get_accent_nucleus_in_binary_accent_stauts_seq():
+    for accents, expect in [
+        # for 0 type
+        (np.array([0, 0, 0, 0, 0]), 0),
+        # for 1 type
+        (np.array([1, 0, 0, 0, 0]), 1),
+        # for 2 type
+        (np.array([0, 1, 0, 0, 0]), 2),
+        # for when included multipe ANs
+        (np.array([0, 1, 1, 0, 0]), 2),
+    ]:
+        accent_nucleus_index = get_accent_nucleus_in_binary_accent_stauts_seq(
+            accents, binary_accent_nucleus_label=1
+        )
+        assert accent_nucleus_index == expect
+
+
+def test_get_accent_nucleus_in_high_low_accent_stauts_seq():
+    for accents, expect in [
+        # for 0 type
+        (np.array([0, 1, 1, 1, 1]), 0),
+        # for 1 type
+        (np.array([1, 0, 0, 0, 0]), 1),
+        # for 2 type
+        (np.array([0, 1, 0, 0, 0]), 2),
+        # for when included multipe ANs
+        (np.array([0, 1, 0, 1, 0]), 2),
+    ]:
+        accent_nucleus_index = get_accent_nucleus_in_high_low_accent_stauts_seq(
+            accents, high_low_accent_nucleus_label=0
+        )
+        assert accent_nucleus_index == expect
+
+
+def test_convert_label_by_accent_representation_model():
+    for (
+        accent,
+        accent_phrase_boundary,
+        mora,
+        current_accent_represent_mode,
+        target_accent_represent_mode,
+        expect,
+    ) in [
+        (
+            np.array([0, 0, 0, 1, 0, 0]),
+            np.array([0, 0, 0, 1, 0, 0]),
+            ["ア", "ア", "ア", "ア", "ア", "ア"],
+            "binary",
+            "high_low",
+            np.array([0, 1, 1, 1, 0, 0]),
+        ),
+        (
+            np.array([0, 1, 1, 1, 0, 0]),
+            np.array([0, 0, 0, 1, 0, 0]),
+            ["ア", "ア", "ア", "ア", "ア", "ア"],
+            "high_low",
+            "binary",
+            np.array([0, 0, 0, 1, 0, 0]),
+        ),
+        (
+            np.array([0, 0, 1, 1, 0, 0]),
+            np.array([0, 0, 0, 1, 0, 0]),
+            ["ア", "ア", "ア", "ア", "ア", "ア"],
+            "binary",
+            "high_low",
+            np.array([0, 1, 1, 1, 0, 0]),
+        ),
+        (
+            np.array([0, 1, 1, 1, 0, 0]),
+            np.array([0, 0, 0, 1, 0, 0]),
+            ["ア", "ア", "ア", "ア", "ア", "ア"],
+            "high_low",
+            "binary",
+            np.array([0, 0, 0, 1, 0, 0]),
+        ),
+    ]:
+        accent = convert_label_by_accent_representation_model(
+            accent,
+            accent_phrase_boundary,
+            mora,
+            current_accent_represent_mode,
+            target_accent_represent_mode,
+            binary_accent_nucleus_label=1,
+            high_low_accent_nucleus_label=0,
+            accent_phrase_boundary_label=1,
+        )
+
+        assert np.all(accent == expect)
