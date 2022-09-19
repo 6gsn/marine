@@ -20,6 +20,10 @@ For academic use, please cite the following paper ([IEEE Xplore](https://www.isc
 }
 ```
 
+## Notice
+
+The model included in this package is trained using [JSUT corpus](https://sites.google.com/site/shinnosuketakamichi/publication/jsut), which is not the same as the dataset in [our paper](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html). Therefore, the model's performance is also not equal to the performance introduced in our paper.
+
 ## Get started
 
 ### Install
@@ -37,7 +41,41 @@ $ pip install -e ".[dev]"
 ### Quick demo
 
 ```python
+In [1]: from marine.predict import Predictor
+
+In [2]: nodes = [
+   ...:     {
+   ...:         "surface": "こんにちは",
+   ...:         "pos": "感動詞:*:*:*",
+   ...:         "pron": "コンニチワ",
+   ...:         "c_type": "*",
+   ...:         "c_form": "*",
+   ...:         "accent_type": 0,
+   ...:         "accent_con_type": "-1",
+   ...:         "chain_flag": -1
+   ...:     }
+   ...: ]
+
+In [3]: predictor = Predictor()
+
+In [4]: predictor.predict([nodes])
+Out[4]:
+{'mora': [['コ', 'ン', 'ニ', 'チ', 'ワ']],
+ 'intonation_phrase_boundary': [[0, 0, 0, 0, 0]],
+ 'accent_phrase_boundary': [[0, 0, 0, 0, 0]],
+ 'accent_status': [[0, 0, 0, 0, 0]]}
+
+In [5]: predictor.predict([nodes], accent_represent_mode="high_low")
+Out[5]:
+{'mora': [['コ', 'ン', 'ニ', 'チ', 'ワ']],
+ 'intonation_phrase_boundary': [[0, 0, 0, 0, 0]],
+ 'accent_phrase_boundary': [[0, 0, 0, 0, 0]],
+ 'accent_status': [[0, 1, 1, 1, 1]]}
 ```
+
+### Build model your self
+
+Coming soon
 
 ## LICENSE
 
