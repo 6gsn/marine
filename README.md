@@ -3,9 +3,9 @@
 [![PyPI](https://img.shields.io/pypi/v/marine.svg)](https://pypi.python.org/pypi/marine)
 [![Python package](https://github.com/6gsn/marine/actions/workflows/ci.yml/badge.svg)](https://github.com/6gsn/marine/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-<!-- [![DOI](https://zenodo.org/badge/#)](https://zenodo.org/badge/latestdoi/#) -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7092054.svg)](https://doi.org/10.5281/zenodo.7092054)
 
-`marine` is a tool kit for building the Japanese accent estimation model proposed in [our paper](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html).
+`marine` is a tool kit for building the Japanese accent estimation model proposed in [our paper](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html) ([demo](https://6gsn.github.io/demos/mtl_accent/)).
 
 For academic use, please cite the following paper ([IEEE Xplore](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html)).
 
@@ -26,13 +26,13 @@ The model included in this package is trained using [JSUT corpus](https://sites.
 
 ## Get started
 
-### Install
+### Installation
 
 ```shell
 $ pip install marine
 ```
 
-### For develop
+### For development
 
 ```shell
 $ pip install -e ".[dev]"
@@ -43,18 +43,7 @@ $ pip install -e ".[dev]"
 ```python
 In [1]: from marine.predict import Predictor
 
-In [2]: nodes = [
-   ...:     {
-   ...:         "surface": "こんにちは",
-   ...:         "pos": "感動詞:*:*:*",
-   ...:         "pron": "コンニチワ",
-   ...:         "c_type": "*",
-   ...:         "c_form": "*",
-   ...:         "accent_type": 0,
-   ...:         "accent_con_type": "-1",
-   ...:         "chain_flag": -1
-   ...:     }
-   ...: ]
+In [2]: nodes = [{"surface": "こんにちは", "pos": "感動詞:*:*:*", "pron": "コンニチワ", "c_type": "*", "c_form": "*", "accent_type": 0, "accent_con_type": "-1", "chain_flag": -1}]
 
 In [3]: predictor = Predictor()
 
@@ -73,11 +62,11 @@ Out[5]:
  'accent_status': [[0, 1, 1, 1, 1]]}
 ```
 
-### Build model your self
+### Build model yourself
 
-Coming soon
+Coming soon...
 
 ## LICENSE
 
-- marine: Apache_2.0 license ([LICENSE](LICENSE))
-- JSUT: CC-BY-SA 4.0 license (Please check [jsut-label/LICENCE.txt](https://github.com/sarulab-speech/jsut-label/blob/master/LICENCE.txt))
+- marine: Apache 2.0 license ([LICENSE](LICENSE))
+- JSUT: CC-BY-SA 4.0 license, etc. (Please check [jsut-label/LICENCE.txt](https://github.com/sarulab-speech/jsut-label/blob/master/LICENCE.txt))
