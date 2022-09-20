@@ -7,7 +7,7 @@
 
 `marine` is a tool kit for building the Japanese accent estimation model proposed in [our paper](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html) ([demo](https://6gsn.github.io/demos/mtl_accent/)).
 
-For academic use, please cite the following paper ([IEEE Xplore](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html)).
+For academic use, please cite the following paper ([ISCA archive](https://www.isca-speech.org/archive/interspeech_2022/park22b_interspeech.html)).
 
 ```bibtex
 @inproceedings{park22b_interspeech,
